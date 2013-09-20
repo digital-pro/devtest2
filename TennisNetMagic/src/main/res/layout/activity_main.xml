@@ -46,6 +46,15 @@
         android:layout_alignLeft="@+id/netView"
         android:text="No photo taken yet" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Process Photo"
+        android:id="@+id/processButton"
+        android:layout_below="@+id/statusView"
+        android:layout_alignLeft="@+id/statusView"
+        android:layout_alignRight="@+id/photoButton" />
+
 </RelativeLayout>
 
 

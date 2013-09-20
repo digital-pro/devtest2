@@ -23,4 +23,5 @@ android {
 }
 
 dependencies {
+    compile files('../../libs/OpenCV Library - 2.4.6/bin/opencv library - 2.4.6.jar')
 }
