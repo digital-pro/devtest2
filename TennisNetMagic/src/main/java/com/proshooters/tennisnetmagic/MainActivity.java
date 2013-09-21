@@ -109,9 +109,9 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
             processImage pImage = new processImage();
 
-            pImage.CVTest();
+            // pImage.CVTest();
 
-            pImage.imageGray();
+            pImage.imageEdges();
 
             }
         });

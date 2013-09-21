@@ -33,27 +33,28 @@
         android:layout_below="@+id/photoButton"
         android:layout_alignLeft="@+id/photoButton"
         android:layout_marginTop="18dp"
-        android:maxHeight="400dp"
-        android:maxWidth="300dp"
-        android:minHeight="300dp"
-        android:minWidth="200dp" />
+        android:maxHeight="800dp"
+        android:maxWidth="600dp"
+        android:minHeight="600dp"
+        android:minWidth="400dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/statusView"
-        android:layout_below="@+id/netView"
+        android:text="No photo taken yet"
+        android:layout_above="@+id/processButton"
         android:layout_alignLeft="@+id/netView"
-        android:text="No photo taken yet" />
+        android:layout_marginBottom="27dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Process Photo"
         android:id="@+id/processButton"
-        android:layout_below="@+id/statusView"
+        android:layout_alignParentBottom="true"
         android:layout_alignLeft="@+id/statusView"
-        android:layout_alignRight="@+id/photoButton" />
+        android:layout_marginBottom="59dp" />
 
 </RelativeLayout>
 

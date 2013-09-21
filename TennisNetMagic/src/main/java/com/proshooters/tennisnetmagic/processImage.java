@@ -28,10 +28,6 @@ package com.proshooters.tennisnetmagic;
         import static android.os.Environment.DIRECTORY_PICTURES;
         import static org.opencv.highgui.Highgui.imread;
         import static org.opencv.imgproc.Imgproc.cvtColor;
-//import static org.opencv.highgui.Highgui.imread;
-//import static org.opencv.imgproc.Imgproc.Canny;
-//import static org.opencv.imgproc.Imgproc.blur;
-//import static org.opencv.imgproc.Imgproc.cvtColor;
 
         import org.opencv.android.BaseLoaderCallback;
         import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -78,6 +74,33 @@ public class processImage {
         mc5.setTo(new Scalar(5));
         System.out.println("OpenCV Mat data:\n" + m.dump());
 
+    }
+
+    public void imageEdges(){
+
+        Mat matImageBlur = new Mat();
+        Mat matImage = imread(MainActivity.imagefileURI.getPath());
+
+        if (matImage.empty() == false) {
+            //cvtColor(picBitmapMat,picBitmapMatGray, CONVERT_TO_GRAY);
+            Imgproc.blur(matImage, matImageBlur, new Size(3,3));
+
+            double thresh = 100;
+            Mat imageContour = new Mat();
+
+            Imgproc.Canny(matImageBlur, imageContour, thresh, thresh * 2);
+
+            Bitmap picBitmapProcessed = Bitmap.createBitmap(imageContour.cols(),imageContour.rows(),Bitmap.Config.ARGB_8888);
+            //Imgproc.cvtColor(imageContour, imageContour, Imgproc.COLOR_GRAY2RGBA,4);
+
+            Utils.matToBitmap(imageContour,picBitmapProcessed,false);
+
+            MainActivity.seeImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmapProcessed,300,400,false));
+
+        } else {
+            // Couldn't read image
+
+        }
     }
 
     public void imageGray(){
