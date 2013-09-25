@@ -38,7 +38,8 @@ import android.view.View.OnTouchListener;
 import android.view.WindowManager;
 import android.widget.Toast;
 
-public class CameraCalibrationActivity extends Activity implements CvCameraViewListener2, OnTouchListener {
+public class CameraCalibrationActivity extends Activity implements OnTouchListener {
+//    public class CameraCalibrationActivity extends Activity implements CvCameraViewListener2, OnTouchListener {
     private static final String TAG = "Calibration::Activity";
 
     private CameraBridgeViewBase mOpenCvCameraView;
@@ -65,9 +66,9 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
         }
     };
 
-    public CameraCalibrationActivity() {
-        Log.i(TAG, "Instantiated new " + this.getLocalClassName());
-    }
+//    public CameraCalibrationActivity() {
+//        Log.i(TAG, "Instantiated new " + this.getLocalClassName());
+//    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class CameraCalibrationActivity extends Activity implements CvCameraViewL
 
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.camera_calibration_java_surface_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        mOpenCvCameraView.setCvCameraViewListener(this);
+        //mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
     @Override

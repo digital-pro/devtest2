@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/../libs/OpenCV Library - 2.4.6/OpenCV Library - 2.4.6.iml" filepath="$PROJECT_DIR$/../libs/OpenCV Library - 2.4.6/OpenCV Library - 2.4.6.iml" />
       <module fileurl="file://$PROJECT_DIR$/TennisNetMagic/TennisNetMagic.iml" filepath="$PROJECT_DIR$/TennisNetMagic/TennisNetMagic.iml" />
       <module fileurl="file://$PROJECT_DIR$/TennisNetMagicProject.iml" filepath="$PROJECT_DIR$/TennisNetMagicProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/devtest2.iml" filepath="$PROJECT_DIR$/devtest2.iml" />
     </modules>
   </component>
 </project>

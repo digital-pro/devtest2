@@ -1,6 +1,7 @@
 package com.proshooters.tennisnetmagic;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -37,7 +38,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
     private static final int CONVERT_TO_GRAY = 6;
     public static Uri imagefileURI;
-    public static ImageView seeImage;
+    public static TouchImageView seeImage;
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -48,6 +49,8 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
     private static final int PROCESS_IMAGE_CODE = 300;
 
     private Uri fileUri;
+    private boolean firstrun = true;
+    private processImage pImage;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -71,7 +74,10 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         setContentView(R.layout.activity_main);
 
         TextView statusView = (TextView) findViewById(R.id.statusView);
-        ImageView netImage = (ImageView) findViewById(R.id.netView);
+        TouchImageView netImage = (TouchImageView) findViewById(R.id.netView);
+        netImage.setMaxZoom(4f);
+        netImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+
         seeImage = netImage;
 
         Button buttonPhoto = (Button) findViewById(R.id.photoButton);
@@ -103,23 +109,36 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
             }
         });
 
-        Button buttonProcess = (Button) findViewById(R.id.processButton);
+        final Button buttonProcess = (Button) findViewById(R.id.processButton);
         buttonProcess.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-            processImage pImage = new processImage();
+            if (pImage == null) pImage = new processImage();
 
-            // pImage.CVTest();
+            if (firstrun == true) {
+                pImage.imageEdges();
+                buttonProcess.setText(R.string.findlines);
+                firstrun = false;
+            } else {
 
-            pImage.imageEdges();
+                pImage.imageLines();
+                buttonProcess.setText(R.string.findedges);
+                File tobeDeleted = new File(fileUri.getPath());
+                tobeDeleted.delete();
+                firstrun = true;
 
             }
+        }
+
+
         });
-
-
-
     }
 
+    // TOTALLY BROKEN BECAUSE CALIBRATION USES JAVA CAMERA VIEW WHICH WONT LOAD
+    public void doCalibration(View view) {
+        Intent intent = new Intent(this, CameraCalibrationActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -128,30 +147,31 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         return true;
     }
 
-
-
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         File picFile = new File(fileUri.getPath());
         TextView statusView = (TextView) findViewById(R.id.statusView);
-        ImageView netImage = (ImageView) findViewById(R.id.netView);
+        TouchImageView netImage = (TouchImageView) findViewById(R.id.netView);
+        Button procImage = (Button) findViewById(R.id.processButton);
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
 
-
                 if (data == null) {
 
                     Bitmap picBitmap = BitmapFactory.decodeFile(fileUri.getPath());
 
-                    netImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmap,300,400,false));
+                    // netImage.setScaleType(ImageView.ScaleType.CENTER);
+
+                    netImage.setAdjustViewBounds(false);
+                    netImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmap, 1200, 1600, false));
+                    netImage.setMaxZoom(4f);
+
                     statusView.setText("Got net image");
+                    procImage.setEnabled(true);
 
                 } else {
                     // DEAD CODE FOR NOW, THIS IS ONLY IF WE GET A DATASTREAM, NOT A FILE

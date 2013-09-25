@@ -26,16 +26,14 @@
         android:layout_alignParentLeft="true"
         android:layout_marginTop="26dp" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.proshooters.tennisnetmagic.TouchImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/netView"
-        android:maxHeight="400dp"
-        android:maxWidth="400dp"
-        android:minHeight="300dp"
-        android:minWidth="300dp"
         android:layout_alignTop="@+id/photoButton"
-        android:layout_toRightOf="@+id/textView" />
+        android:layout_toRightOf="@+id/textView"
+        android:background="@drawable/ic_launcher"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,7 +48,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Process Photo"
+        android:text="@string/findedges"
         android:id="@+id/processButton"
         android:layout_centerVertical="true"
         android:layout_alignLeft="@+id/photoButton" />

@@ -27,6 +27,8 @@ package com.proshooters.tennisnetmagic;
 
         import static android.os.Environment.DIRECTORY_PICTURES;
         import static org.opencv.highgui.Highgui.imread;
+        import static org.opencv.imgproc.Imgproc.HoughLines;
+        import static org.opencv.imgproc.Imgproc.HoughLinesP;
         import static org.opencv.imgproc.Imgproc.cvtColor;
 
         import org.opencv.android.BaseLoaderCallback;
@@ -38,6 +40,7 @@ package com.proshooters.tennisnetmagic;
         import org.opencv.core.CvType;
         import org.opencv.core.Mat;
         import org.opencv.core.MatOfPoint;
+        import org.opencv.core.Point;
         import org.opencv.core.Rect;
         import org.opencv.core.Scalar;
         import org.opencv.core.Size;
@@ -58,7 +61,8 @@ public class processImage {
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int PROCESS_IMAGE_CODE = 300;
 
-    private static final int CONVERT_TO_GRAY = 6;
+    private Mat imageContour;
+    private Mat matImage;
 
     private Bitmap picBitmap;
     private Uri fileUri;
@@ -79,23 +83,65 @@ public class processImage {
     public void imageEdges(){
 
         Mat matImageBlur = new Mat();
-        Mat matImage = imread(MainActivity.imagefileURI.getPath());
+        matImage = imread(MainActivity.imagefileURI.getPath());
 
         if (matImage.empty() == false) {
-            //cvtColor(picBitmapMat,picBitmapMatGray, CONVERT_TO_GRAY);
+
+            // Optional pre-processing with Blur
             Imgproc.blur(matImage, matImageBlur, new Size(3,3));
 
-            double thresh = 100;
-            Mat imageContour = new Mat();
+            double thresh = 50;
+            imageContour = new Mat();
+            Mat imageContourGray = new Mat();
 
-            Imgproc.Canny(matImageBlur, imageContour, thresh, thresh * 2);
+            Imgproc.Canny(matImageBlur, imageContour, thresh, thresh * 4);
 
             Bitmap picBitmapProcessed = Bitmap.createBitmap(imageContour.cols(),imageContour.rows(),Bitmap.Config.ARGB_8888);
             //Imgproc.cvtColor(imageContour, imageContour, Imgproc.COLOR_GRAY2RGBA,4);
 
             Utils.matToBitmap(imageContour,picBitmapProcessed,false);
 
-            MainActivity.seeImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmapProcessed,300,400,false));
+            MainActivity.seeImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmapProcessed,1200,1600,false));
+            //MainActivity.seeImage.setImageBitmap(picBitmapProcessed);
+        }
+    }
+
+    public void imageLines(){
+
+            // Canny produces a gray image, so no need to convert
+            //cvtColor(imageContour, imageContourGray, Imgproc.COLOR_RGB2GRAY,4);
+
+            Mat lines = new Mat();
+            int threshold = 50;
+            int minLineSize = 10;
+            int lineGap = 20;
+            int lineDisplayWidth = 30;
+
+        if (imageContour.empty() == false ) {
+
+            HoughLinesP(imageContour, lines, 1, Math.PI/180, threshold, minLineSize, lineGap);
+
+            for (int i = 0; i < lines.cols() ; i++){
+
+                double[] vec = lines.get(0, i);
+                double x1 = vec[0],
+                        y1 = vec[1],
+                        x2 = vec[2],
+                        y2 = vec[3];
+                Point start = new Point(x1,y1);
+                Point end = new Point(x2, y2);
+                Core.line(matImage, start, end, new Scalar(255,0,0), lineDisplayWidth);
+
+            }
+
+//            Bitmap picBitmapProcessed = Bitmap.createBitmap(imageContour.cols(),imageContour.rows(),Bitmap.Config.ARGB_8888);
+            Bitmap picBitmapProcessed = Bitmap.createBitmap(matImage.cols(),matImage.rows(),Bitmap.Config.ARGB_8888);
+            //Imgproc.cvtColor(imageContour, imageContour, Imgproc.COLOR_GRAY2RGBA,4);
+
+            Utils.matToBitmap(matImage,picBitmapProcessed,false);
+
+            MainActivity.seeImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmapProcessed,1200,1600,false));
+               //MainActivity.seeImage.setImageBitmap(picBitmapProcessed);
 
         } else {
             // Couldn't read image
@@ -110,7 +156,7 @@ public class processImage {
 
         picBitmapMat = imread(MainActivity.imagefileURI.getPath());
         if (picBitmapMat.empty() == false) {
-        cvtColor(picBitmapMat,picBitmapMatGray, CONVERT_TO_GRAY);
+        cvtColor(picBitmapMat,picBitmapMatGray, Imgproc.COLOR_RGB2GRAY);
 //            blur(imageNetGray, imageNetGray, Size(3,3));
 
         int thresh = 100;

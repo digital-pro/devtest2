@@ -19,6 +19,8 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 
+import org.w3c.dom.Attr;
+
 public class TouchImageView extends ImageView {
 
     Matrix matrix;
@@ -45,11 +47,6 @@ public class TouchImageView extends ImageView {
     ScaleGestureDetector mScaleDetector;
 
     Context context;
-
-    public TouchImageView(Context context) {
-        super(context);
-        sharedConstructing(context);
-    }
 
     public TouchImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
