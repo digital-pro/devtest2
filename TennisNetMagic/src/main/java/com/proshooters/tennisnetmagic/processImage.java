@@ -115,7 +115,7 @@ public class processImage {
             int threshold = 50;
             int minLineSize = 10;
             int lineGap = 20;
-            int lineDisplayWidth = 30;
+            int lineDisplayWidth = 15;
 
         if (imageContour.empty() == false ) {
 

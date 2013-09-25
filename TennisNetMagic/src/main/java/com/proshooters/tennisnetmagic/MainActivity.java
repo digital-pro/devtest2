@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
     private static final int CONVERT_TO_GRAY = 6;
     public static Uri imagefileURI;
-    public static TouchImageView seeImage;
+    public static ZoomableImageView seeImage;
 
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
@@ -74,9 +74,9 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         setContentView(R.layout.activity_main);
 
         TextView statusView = (TextView) findViewById(R.id.statusView);
-        TouchImageView netImage = (TouchImageView) findViewById(R.id.netView);
-        netImage.setMaxZoom(4f);
-        netImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        ZoomableImageView netImage = (ZoomableImageView) findViewById(R.id.netView);
+//        netImage.setMaxZoom(4f);
+//        netImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
 
         seeImage = netImage;
 
@@ -152,7 +152,7 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
         File picFile = new File(fileUri.getPath());
         TextView statusView = (TextView) findViewById(R.id.statusView);
-        TouchImageView netImage = (TouchImageView) findViewById(R.id.netView);
+        ZoomableImageView netImage = (ZoomableImageView) findViewById(R.id.netView);
         Button procImage = (Button) findViewById(R.id.processButton);
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -166,9 +166,9 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
                     // netImage.setScaleType(ImageView.ScaleType.CENTER);
 
-                    netImage.setAdjustViewBounds(false);
+                    //netImage.setAdjustViewBounds(true);
                     netImage.setImageBitmap(Bitmap.createScaledBitmap(picBitmap, 1200, 1600, false));
-                    netImage.setMaxZoom(4f);
+                    //netImage.setMaxZoom(4f);
 
                     statusView.setText("Got net image");
                     procImage.setEnabled(true);
