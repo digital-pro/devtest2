@@ -3,15 +3,19 @@ package com.proshooters.tennisnetmagic;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Environment;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,10 +51,17 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
     private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
     private static final int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 200;
     private static final int PROCESS_IMAGE_CODE = 300;
+    private static final int RESULT_SETTINGS = 1;
 
     private Uri fileUri;
     private boolean firstrun = true;
     private processImage pImage;
+
+    // Our preferences, which we stick here so that the processImage class can get at them
+    private SharedPreferences sPrefs;
+    public static int minLineSize;
+    public static int threshold;
+
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -72,6 +83,13 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        sPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        minLineSize = Integer.parseInt(sPrefs.getString("minlinesize","20"));
+        threshold = Integer.parseInt(sPrefs.getString("threshold","50"));
+
 
         TextView statusView = (TextView) findViewById(R.id.statusView);
         ZoomableImageView netImage = (ZoomableImageView) findViewById(R.id.netView);
@@ -123,8 +141,11 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
                 pImage.imageLines();
                 buttonProcess.setText(R.string.findedges);
-                File tobeDeleted = new File(fileUri.getPath());
-                tobeDeleted.delete();
+
+                if (sPrefs.getBoolean("deleteimage",true)) {
+                    File tobeDeleted = new File(fileUri.getPath());
+                    tobeDeleted.delete();
+                }
                 firstrun = true;
 
             }
@@ -133,6 +154,23 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
 
         });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent = new Intent(this, com.proshooters.tennisnetmagic.SettingsActivity.class);
+                startActivityForResult(intent, RESULT_SETTINGS);
+                return true;
+            case R.id.about:
+                return true;
+            case R.id.help:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     // TOTALLY BROKEN BECAUSE CALIBRATION USES JAVA CAMERA VIEW WHICH WONT LOAD
     public void doCalibration(View view) {
@@ -147,15 +185,28 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
         return true;
     }
 
+    /*
+    public static class SettingsFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            // Load the preferences from an XML resource
+            addPreferencesFromResource(R.xml.preferences);
+        }
+    }
+    */
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        File picFile = new File(fileUri.getPath());
         TextView statusView = (TextView) findViewById(R.id.statusView);
         ZoomableImageView netImage = (ZoomableImageView) findViewById(R.id.netView);
         Button procImage = (Button) findViewById(R.id.processButton);
 
         if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+
+            File picFile = new File(fileUri.getPath());
 
             if (resultCode == RESULT_OK) {
                 // Image captured and saved to fileUri specified in the Intent
@@ -187,10 +238,14 @@ public class MainActivity extends Activity implements CameraBridgeViewBase.CvCam
                 // User cancelled the image capture
                 statusView.setText("Image capture cancelled.");
 
-            } else {
+            } else
+                {
                 // Image capture failed, advise user
                 statusView.setText("Image capture failed.");
             }
+        } else if (resultCode == RESULT_SETTINGS){
+            // we've gotten settings
+
         }
        // finish();
 

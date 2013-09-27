@@ -112,8 +112,8 @@ public class processImage {
             //cvtColor(imageContour, imageContourGray, Imgproc.COLOR_RGB2GRAY,4);
 
             Mat lines = new Mat();
-            int threshold = 50;
-            int minLineSize = 10;
+            int threshold = MainActivity.threshold;
+            int minLineSize = MainActivity.minLineSize;
             int lineGap = 20;
             int lineDisplayWidth = 15;
 
